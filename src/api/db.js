@@ -1,0 +1,10 @@
+import * as firebase from 'firebase';
+
+const firebaseConfig = {};
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+
+export default db;
