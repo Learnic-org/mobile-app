@@ -7,6 +7,7 @@ import {
 } from './core/auth/authContext';
 import Home from './components/Home/Home';
 import Login from './features/Login/Login';
+import './api/db';
 
 const App = () => {
   const {getStatus} = useAuthContext();

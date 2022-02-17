@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,29 +6,19 @@ import {
   ScrollView,
   TouchableHighlight,
 } from 'react-native';
-import Svg, {Path} from 'react-native-svg';
-import db from '../../api/db';
 import {useAuthContext} from '../../core/auth/authContext';
+import {getDictionary} from '../../api/dictionary';
+import Icon from '../../components/Icon/Icon';
 
 const Dictionary = () => {
   const {getUser} = useAuthContext();
-  const [words, setWords] = React.useState({});
+  const [words, setWords] = useState({});
 
-  const getWords = React.useCallback(async () => {
+  const getWords = useCallback(async () => {
     const user = getUser() || {};
     const {uid = null} = user;
     if (!uid) return;
-    try {
-      const wordsRef = db.collection('users').doc(uid).collection('words');
-      const words = await wordsRef.get();
-      const result = {};
-      words.forEach(doc => {
-        result[doc.id] = doc.data();
-      });
-      setWords(result);
-    } catch (error) {
-      console.log('Error: ', error);
-    }
+    getDictionary(uid).then(setWords);
   }, [getUser]);
 
   useEffect(() => {
@@ -48,19 +38,7 @@ const Dictionary = () => {
             <TouchableHighlight style={styles.word} key={id}>
               <>
                 <Text style={styles.wordText}>{`${word} - ${translate}`}</Text>
-                <Svg
-                  style={styles.icon}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512">
-                  <Path
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="48"
-                    d="m184 112 144 144-144 144"
-                  />
-                </Svg>
+                <Icon name="arrowRight" />
               </>
             </TouchableHighlight>
           );
