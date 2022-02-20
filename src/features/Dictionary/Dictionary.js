@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,45 +6,75 @@ import {
   ScrollView,
   TouchableHighlight,
 } from 'react-native';
-import {useAuthContext} from '../../core/auth/authContext';
-import {getDictionary} from '../../api/dictionary';
 import Icon from '../../components/Icon/Icon';
+import {useDictionary} from '../../api/dictionary';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import WordCard from './WordCard/WordCard';
+import NewWord from './NewWord/NewWord';
 
-const Dictionary = () => {
-  const {getUser} = useAuthContext();
-  const [words, setWords] = useState({});
+const Stack = createNativeStackNavigator();
 
-  const getWords = useCallback(async () => {
-    const user = getUser() || {};
-    const {uid = null} = user;
-    if (!uid) return;
-    getDictionary(uid).then(setWords);
-  }, [getUser]);
+const Dictionary = ({navigation}) => {
+  const {words} = useDictionary();
+  const [activeWordId, setActiveWordId] = useState(null);
 
   useEffect(() => {
-    getWords();
-  }, [getWords]);
+    if (activeWordId) {
+      navigation.navigate('WordCard');
+    }
+  }, [navigation, activeWordId]);
 
   if (!words) return null;
 
-  return (
-    <ScrollView>
-      <View style={styles.dictionary}>
-        {Object.entries(words).map(entry => {
-          const [id, data] = entry;
-          const {word, translate} = data;
+  const openNewWord = () => {
+    navigation.navigate('NewWord');
+  };
 
-          return (
-            <TouchableHighlight style={styles.word} key={id}>
-              <>
-                <Text style={styles.wordText}>{`${word} - ${translate}`}</Text>
-                <Icon name="arrowRight" />
-              </>
-            </TouchableHighlight>
-          );
-        })}
+  const List = () => (
+    <>
+      <ScrollView>
+        <View style={styles.dictionary}>
+          {Object.entries(words).map(entry => {
+            const [id, data] = entry;
+            const {word, translate} = data;
+
+            return (
+              <TouchableHighlight
+                style={styles.word}
+                key={id}
+                onPress={() => setActiveWordId(id)}>
+                <>
+                  <Text
+                    style={styles.wordText}>{`${word} - ${translate}`}</Text>
+                  <Icon name="arrowRight" />
+                </>
+              </TouchableHighlight>
+            );
+          })}
+        </View>
+      </ScrollView>
+      <View style={styles.addNewButtonContainer}>
+        <TouchableHighlight style={styles.addButton} onPress={openNewWord}>
+          <Text style={styles.addButtonText}>+ Add new word</Text>
+        </TouchableHighlight>
       </View>
-    </ScrollView>
+    </>
+  );
+
+  return (
+    <Stack.Navigator
+      initialRouteName="List"
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="List" component={List} />
+      <Stack.Screen
+        name="WordCard"
+        component={WordCard}
+        initialParams={{itemId: activeWordId}}
+      />
+      <Stack.Screen name="NewWord" component={NewWord} />
+    </Stack.Navigator>
   );
 };
 
@@ -73,10 +103,23 @@ const styles = StyleSheet.create({
     fontSize: 22,
     width: '80%',
   },
-  icon: {
-    width: 30,
-    height: 30,
-    color: '#7c83fd',
+  addButton: {
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: '#344CB7',
+    padding: 6,
+    margin: 16,
+    marginTop: 8,
+    marginBottom: 8,
+    display: 'flex',
+    textAlign: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    fontSize: 20,
+    color: '#fff',
   },
 });
 

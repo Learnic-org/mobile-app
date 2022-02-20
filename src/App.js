@@ -8,6 +8,15 @@ import {
 import Home from './components/Home/Home';
 import Login from './features/Login/Login';
 import './api/db';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+
+const queryClient = new QueryClient();
 
 const App = () => {
   const {getStatus} = useAuthContext();
@@ -23,7 +32,9 @@ const App = () => {
 const HomeScreen = () => {
   return (
     <AuthContextProvider>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </AuthContextProvider>
   );
 };

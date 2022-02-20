@@ -78,16 +78,55 @@ const ArrowRight = () => {
   );
 };
 
+const ArrowLeft = () => {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      style={styles.icon}>
+      <Path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="48"
+        d="M328 112 184 256l144 144"
+      />
+    </Svg>
+  );
+};
+
+const Add = props => {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      style={styles.icon}
+      {...props}>
+      <Path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="32"
+        d="M256 112v288m144-144H112"
+      />
+    </Svg>
+  );
+};
+
 const icons = {
   dictionary: DictionaryIcon,
   training: TrainingIcon,
   profile: ProfileIcon,
   arrowRight: ArrowRight,
+  arrowLeft: ArrowLeft,
+  add: Add,
 };
 
-const Icon = ({name}) => {
+const Icon = ({name, ...props}) => {
   const Component = icons[name];
-  if (Component) return <Component />;
+  if (Component) return <Component {...props} />;
   return null;
 };
 

@@ -14,12 +14,15 @@
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
+    "add": "^2.0.6",
     "firebase": "8.2.3",
     "react": "17.0.2",
     "react-native": "0.67.2",
     "react-native-safe-area-context": "^3.4.0",
     "react-native-screens": "^3.11.1",
-    "react-native-svg": "^12.1.1"
+    "react-native-svg": "^12.1.1",
+    "react-query": "^3.34.15",
+    "yarn": "^1.22.17"
   },
   "devDependencies": {
     "@babel/core": "^7.17.2",
