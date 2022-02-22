@@ -26,7 +26,7 @@ const DictionaryIcon = () => {
   );
 };
 
-const TrainingIcon = () => {
+const StudyIcon = () => {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
@@ -60,10 +60,10 @@ const ProfileIcon = () => {
   );
 };
 
-const ArrowRight = () => {
+const ArrowRight = ({style}) => {
   return (
     <Svg
-      style={styles.icon}
+      style={{...styles.icon, ...style}}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512">
       <Path
@@ -78,12 +78,12 @@ const ArrowRight = () => {
   );
 };
 
-const ArrowLeft = () => {
+const ArrowLeft = ({style}) => {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
-      style={styles.icon}>
+      style={{...styles.icon, ...style}}>
       <Path
         fill="none"
         stroke="currentColor"
@@ -96,13 +96,12 @@ const ArrowLeft = () => {
   );
 };
 
-const Add = props => {
+const Add = ({style}) => {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
-      style={styles.icon}
-      {...props}>
+      style={{...styles.icon, ...style}}>
       <Path
         fill="none"
         stroke="currentColor"
@@ -117,7 +116,7 @@ const Add = props => {
 
 const icons = {
   dictionary: DictionaryIcon,
-  training: TrainingIcon,
+  study: StudyIcon,
   profile: ProfileIcon,
   arrowRight: ArrowRight,
   arrowLeft: ArrowLeft,

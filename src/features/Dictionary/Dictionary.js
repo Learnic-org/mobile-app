@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,8 +11,31 @@ import {useDictionary} from '../../api/dictionary';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WordCard from './WordCard/WordCard';
 import NewWord from './NewWord/NewWord';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 const Stack = createNativeStackNavigator();
+
+const prepareWords = words => {
+  const groupedByDate = {};
+  Object.entries(words).forEach(entry => {
+    const [id, data] = entry;
+    const date = dayjs(data.date);
+    const stringDate =
+      date.year() === dayjs().year()
+        ? date.format('DD MMMM')
+        : date.format('DD MMMM YYYY');
+
+    if (groupedByDate[stringDate]) {
+      groupedByDate[stringDate] = [...groupedByDate[stringDate], {id, ...data}];
+    } else {
+      groupedByDate[stringDate] = [{id, ...data}];
+    }
+  });
+
+  return groupedByDate;
+};
 
 const Dictionary = ({navigation}) => {
   const {words} = useDictionary();
@@ -24,6 +47,10 @@ const Dictionary = ({navigation}) => {
     }
   }, [navigation, activeWordId]);
 
+  const preparedWords = useMemo(() => {
+    return prepareWords(words);
+  }, [words]);
+
   if (!words) return null;
 
   const openNewWord = () => {
@@ -34,23 +61,22 @@ const Dictionary = ({navigation}) => {
     <>
       <ScrollView>
         <View style={styles.dictionary}>
-          {Object.entries(words).map(entry => {
-            const [id, data] = entry;
-            const {word, translate} = data;
-
-            return (
-              <TouchableHighlight
-                style={styles.word}
-                key={id}
-                onPress={() => setActiveWordId(id)}>
-                <>
-                  <Text
-                    style={styles.wordText}>{`${word} - ${translate}`}</Text>
-                  <Icon name="arrowRight" />
-                </>
-              </TouchableHighlight>
-            );
-          })}
+          {Object.keys(preparedWords).map(date => (
+            <View style={styles.group}>
+              <Text style={styles.date}>{date}</Text>
+              {preparedWords[date].map(({id, word, translate}) => (
+                <TouchableHighlight
+                  style={styles.word}
+                  key={id}
+                  onPress={() => setActiveWordId(id)}>
+                  <>
+                    <Text
+                      style={styles.wordText}>{`${word} - ${translate}`}</Text>
+                  </>
+                </TouchableHighlight>
+              ))}
+            </View>
+          ))}
         </View>
       </ScrollView>
       <View style={styles.addNewButtonContainer}>
@@ -88,19 +114,13 @@ const styles = StyleSheet.create({
   word: {
     paddingTop: 8,
     paddingBottom: 8,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 4,
-    marginBottom: 4,
-    backgroundColor: '#fff',
-    borderRadius: 8,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   wordText: {
-    fontSize: 22,
+    fontSize: 20,
     width: '80%',
   },
   addButton: {
@@ -120,6 +140,17 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 20,
     color: '#fff',
+  },
+  group: {
+    backgroundColor: '#fff',
+    marginBottom: 12,
+    borderRadius: 8,
+    padding: 10,
+  },
+  date: {
+    fontSize: 20,
+    marginBottom: 8,
+    fontWeight: 'bold',
   },
 });
 

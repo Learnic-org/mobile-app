@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useDictionary} from '../../../api/dictionary';
+import Icon from '../../../components/Icon/Icon';
 
 const NewWord = ({navigation}) => {
   const {addNewWord, loading} = useDictionary();
@@ -24,30 +25,41 @@ const NewWord = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      <TextInput
-        style={styles.input}
-        placeholder="Word"
-        value={word}
-        onChangeText={setWord}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Translate"
-        value={translate}
-        onChangeText={setTranslate}
-      />
-      <TouchableHighlight style={styles.saveButton} onPress={handleSave}>
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <Text style={styles.saveButtonText}>Save</Text>
-        )}
-      </TouchableHighlight>
+      <View style={styles.container}>
+        <TouchableHighlight onPress={() => navigation.goBack()}>
+          <Icon name="arrowLeft" style={{color: '#000'}} />
+        </TouchableHighlight>
+        <TextInput
+          style={styles.input}
+          placeholder="Word"
+          value={word}
+          onChangeText={setWord}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Translate"
+          value={translate}
+          onChangeText={setTranslate}
+        />
+        <TouchableHighlight style={styles.saveButton} onPress={handleSave}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text style={styles.saveButtonText}>Save</Text>
+          )}
+        </TouchableHighlight>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    margin: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 8,
+  },
   input: {
     margin: 12,
     borderWidth: 1,

@@ -9,11 +9,15 @@ const fetchWords = async uid => {
     const words = await wordsRef.orderBy('date', 'desc').get();
     const result = {};
     words.forEach(doc => {
-      result[doc.id] = doc.data();
+      const data = doc.data();
+      result[doc.id] = {
+        ...data,
+        date: data.date.toDate(),
+      };
     });
     return result;
   } catch (error) {
-    throw new Error('Error while fetching words: ', error);
+    throw new Error('Error while fetching words: ' + error);
   }
 };
 
