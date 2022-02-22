@@ -1,25 +1,7 @@
-import {useMemo, useState} from 'react';
-import db from './db';
-import {useQuery, useMutation, useQueryClient} from 'react-query';
-import {useAuthContext} from '../core/auth/authContext';
-
-const fetchWords = async uid => {
-  try {
-    const wordsRef = db.collection('users').doc(uid).collection('words');
-    const words = await wordsRef.orderBy('date', 'desc').get();
-    const result = {};
-    words.forEach(doc => {
-      const data = doc.data();
-      result[doc.id] = {
-        ...data,
-        date: data.date.toDate(),
-      };
-    });
-    return result;
-  } catch (error) {
-    throw new Error('Error while fetching words: ' + error);
-  }
-};
+import {useState} from 'react';
+import db from '../db';
+import {useMutation, useQueryClient} from 'react-query';
+import {useAuthContext} from '../../core/auth/authContext';
 
 const addNewWordRequest = async ({uid, word, translate}) => {
   const request = db.collection('users').doc(uid).collection('words');
@@ -47,21 +29,12 @@ const addNewWordRequest = async ({uid, word, translate}) => {
   }
 };
 
-const useDictionary = () => {
+const useMutateWords = () => {
   const queryClient = useQueryClient();
   const {getUser} = useAuthContext();
   const userData = getUser() || {};
   const {uid} = userData;
   const [loading, setLoading] = useState(false);
-
-  const {
-    isLoading,
-    isError,
-    data: words,
-    error,
-  } = useQuery('words', () => fetchWords(uid), {
-    enabled: !!uid,
-  });
 
   const addNewWordMutation = useMutation(addNewWordRequest, {
     onSuccess: newData => {
@@ -78,10 +51,6 @@ const useDictionary = () => {
     },
   });
 
-  const getWord = wordId => {
-    return words[wordId];
-  };
-
   const addNewWord = async ({word, translate}) => {
     setLoading(true);
     addNewWordMutation.mutate({
@@ -92,11 +61,9 @@ const useDictionary = () => {
   };
 
   return {
-    words,
-    getWord,
     loading,
     addNewWord,
   };
 };
 
-export {useDictionary};
+export default useMutateWords;

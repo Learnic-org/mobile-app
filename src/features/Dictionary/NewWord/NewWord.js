@@ -8,11 +8,11 @@ import {
   TouchableHighlight,
   ActivityIndicator,
 } from 'react-native';
-import {useDictionary} from '../../../api/dictionary';
+import useMutateWords from '../../../api/hooks/useMutateWords';
 import Icon from '../../../components/Icon/Icon';
 
 const NewWord = ({navigation}) => {
-  const {addNewWord, loading} = useDictionary();
+  const {addNewWord, loading} = useMutateWords();
   const [word, setWord] = useState('');
   const [translate, setTranslate] = useState('');
 

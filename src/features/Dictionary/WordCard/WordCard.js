@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text, View, TouchableHighlight, StyleSheet} from 'react-native';
 import Icon from '../../../components/Icon/Icon';
-import {useDictionary} from '../../../api/dictionary';
+import useQueryWordById from '../../../api/hooks/useQueryWordById';
 
 const WordCard = ({navigation, route}) => {
-  const {getWord} = useDictionary();
+  const {getWordById} = useQueryWordById();
   const {itemId} = route.params;
-  const {word, translate} = getWord(itemId);
+  const {word, translate} = getWordById(itemId);
 
   return (
     <View style={styles.container}>

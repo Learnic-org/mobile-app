@@ -6,18 +6,19 @@ import {
   ScrollView,
   TouchableHighlight,
 } from 'react-native';
-import Icon from '../../components/Icon/Icon';
-import {useDictionary} from '../../api/dictionary';
+import useQueryWords from '../../api/hooks/useQueryWords';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WordCard from './WordCard/WordCard';
 import NewWord from './NewWord/NewWord';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 dayjs.extend(customParseFormat);
 
 const Stack = createNativeStackNavigator();
 
 const prepareWords = words => {
+  if (!words) return [];
   const groupedByDate = {};
   Object.entries(words).forEach(entry => {
     const [id, data] = entry;
@@ -38,7 +39,7 @@ const prepareWords = words => {
 };
 
 const Dictionary = ({navigation}) => {
-  const {words} = useDictionary();
+  const {words} = useQueryWords();
   const [activeWordId, setActiveWordId] = useState(null);
 
   useEffect(() => {
