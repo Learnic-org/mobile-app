@@ -113,12 +113,14 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   word: {
-    paddingTop: 8,
-    paddingBottom: 8,
+    padding: 8,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    marginBottom: 6,
+    borderRadius: 8,
   },
   wordText: {
     fontSize: 20,
@@ -143,9 +145,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   group: {
-    backgroundColor: '#fff',
     marginBottom: 12,
-    borderRadius: 8,
     padding: 10,
   },
   date: {

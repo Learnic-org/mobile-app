@@ -34,7 +34,9 @@ const Study = () => {
         data={preparedWords}
         sliderWidth={300}
         itemWidth={300}
-        renderItem={({item: {id, word}}) => <Card id={id} word={word} />}
+        renderItem={({item: {id, word, translate}}) => (
+          <Card id={id} word={word} translate={translate} />
+        )}
         onSnapToItem={setIndex}
       />
     </View>
