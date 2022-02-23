@@ -14,7 +14,6 @@ const fetchWords = async uid => {
         date: data.date.toDate(),
       };
     });
-    console.log('WORDS', result);
     return result;
   } catch (error) {
     throw new Error('Error while fetching words: ' + error);
@@ -27,7 +26,7 @@ const useQueryWords = () => {
   const {uid} = userData;
 
   const {
-    isLoading,
+    isLoading = true,
     isError,
     data: words,
     error,
@@ -37,6 +36,8 @@ const useQueryWords = () => {
 
   return {
     words,
+    isLoading: !uid ? true : isLoading,
+    isError,
   };
 };
 

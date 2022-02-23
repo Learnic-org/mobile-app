@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableHighlight,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import useQueryWords from '../../api/hooks/useQueryWords';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -40,7 +41,7 @@ const prepareWords = words => {
 };
 
 const Dictionary = ({navigation}) => {
-  const {words} = useQueryWords();
+  const {words, isLoading = true} = useQueryWords();
   const [activeWordId, setActiveWordId] = useState(null);
 
   useEffect(() => {
@@ -57,12 +58,18 @@ const Dictionary = ({navigation}) => {
     navigation.navigate('NewWord');
   };
 
+  const Loading = () => (
+    <View style={styles.noWordsContainer}>
+      <ActivityIndicator />
+    </View>
+  );
+
   const List = () => (
     <>
       <ScrollView>
         <View style={styles.dictionary}>
           {Object.keys(preparedWords).map(date => (
-            <View style={styles.group}>
+            <View key={date} style={styles.group}>
               <Text style={styles.date}>{date}</Text>
               {preparedWords[date].map(({id, word, translate}) => (
                 <TouchableHighlight
@@ -94,13 +101,23 @@ const Dictionary = ({navigation}) => {
     </View>
   );
 
+  const ListScreen = () => {
+    if (isLoading) {
+      return <Loading />;
+    } else if (!words) {
+      return <NoWord />;
+    } else {
+      return <List />;
+    }
+  };
+
   return (
     <Stack.Navigator
       initialRouteName="List"
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="List" component={!words ? NoWord : List} />
+      <Stack.Screen name="List" component={ListScreen} />
       <Stack.Screen
         name="WordCard"
         component={WordCard}
