@@ -5,7 +5,7 @@ import {useAuthContext} from '../../core/auth/authContext';
 const fetchWords = async uid => {
   try {
     const wordsRef = db.collection('users').doc(uid).collection('words');
-    const words = await wordsRef.orderBy('date', 'desc').get();
+    const words = await wordsRef.get();
     const result = {};
     words.forEach(doc => {
       const data = doc.data();
@@ -14,6 +14,7 @@ const fetchWords = async uid => {
         date: data.date.toDate(),
       };
     });
+    console.log('WORDS', result);
     return result;
   } catch (error) {
     throw new Error('Error while fetching words: ' + error);

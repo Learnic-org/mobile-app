@@ -17,12 +17,20 @@ const prepareWords = words => {
 };
 
 const Study = () => {
-  const {words = {}} = useQueryWords();
+  const {words} = useQueryWords();
   const [index, setIndex] = useState(0);
 
   const preparedWords = useMemo(() => {
     return prepareWords(words);
   }, [words]);
+
+  if (!words) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.noWords}>😐 No words for study.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -51,10 +59,13 @@ const styles = StyleSheet.create({
     paddingTop: 100,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
   },
   header: {
     marginBottom: 12,
+    fontSize: 18,
+  },
+  noWords: {
     fontSize: 18,
   },
 });

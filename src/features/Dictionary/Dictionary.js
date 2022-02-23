@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   TouchableHighlight,
+  Button,
 } from 'react-native';
 import useQueryWords from '../../api/hooks/useQueryWords';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -52,8 +53,6 @@ const Dictionary = ({navigation}) => {
     return prepareWords(words);
   }, [words]);
 
-  if (!words) return null;
-
   const openNewWord = () => {
     navigation.navigate('NewWord');
   };
@@ -88,13 +87,20 @@ const Dictionary = ({navigation}) => {
     </>
   );
 
+  const NoWord = () => (
+    <View style={styles.noWordsContainer}>
+      <Text style={styles.noWordsText}>No words in dictionary. </Text>
+      <Button onPress={openNewWord} title="Add the first one!" />
+    </View>
+  );
+
   return (
     <Stack.Navigator
       initialRouteName="List"
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="List" component={List} />
+      <Stack.Screen name="List" component={!words ? NoWord : List} />
       <Stack.Screen
         name="WordCard"
         component={WordCard}
@@ -107,10 +113,7 @@ const Dictionary = ({navigation}) => {
 
 const styles = StyleSheet.create({
   dictionary: {
-    paddingTop: 16,
-    paddingBottom: 16,
-    paddingLeft: 16,
-    paddingRight: 16,
+    padding: 16,
   },
   word: {
     padding: 8,
@@ -152,6 +155,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 8,
     fontWeight: 'bold',
+  },
+  noWordsContainer: {
+    padding: 16,
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  noWordsText: {
+    fontSize: 20,
   },
 });
 

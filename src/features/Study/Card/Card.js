@@ -12,7 +12,7 @@ const Card = ({id, word, translate}) => {
           style={styles.showTranslate}
           onPress={() => setShowTranslate(oldValue => !oldValue)}
           underlayColor="#d4e5ff">
-          {showTranslate ? (
+          {Boolean(showTranslate) ? (
             <Text>{translate}</Text>
           ) : (
             <Text>Show translate</Text>
