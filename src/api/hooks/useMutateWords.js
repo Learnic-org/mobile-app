@@ -29,6 +29,8 @@ const addNewWordRequest = async ({uid, word, translate}) => {
   }
 };
 
+const deleteWordRequest = async id => {};
+
 const useMutateWords = () => {
   const queryClient = useQueryClient();
   const {getUser} = useAuthContext();
@@ -58,6 +60,11 @@ const useMutateWords = () => {
       word,
       translate,
     });
+  };
+
+  const deleteWord = async id => {
+    setLoading(true);
+    await deleteWordRequest(id);
   };
 
   return {

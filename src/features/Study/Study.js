@@ -1,5 +1,5 @@
-import React, {useState, useMemo} from 'react';
-import {Text, View, StyleSheet, TouchableHighlight} from 'react-native';
+import React, {useState, useMemo, useRef} from 'react';
+import {Text, View, StyleSheet} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import useQueryWords from '../../api/hooks/useQueryWords';
 import Card from './Card/Card';
@@ -19,10 +19,15 @@ const prepareWords = words => {
 const Study = () => {
   const {words} = useQueryWords();
   const [index, setIndex] = useState(0);
+  const carousel = useRef(null);
 
   const preparedWords = useMemo(() => {
     return prepareWords(words);
   }, [words]);
+
+  const handleNext = () => {
+    carousel.current.snapToNext();
+  };
 
   if (!words) {
     return (
@@ -38,12 +43,19 @@ const Study = () => {
         preparedWords.length
       }`}</Text>
       <Carousel
+        ref={carousel}
         layout={'default'}
         data={preparedWords}
         sliderWidth={300}
         itemWidth={300}
-        renderItem={({item: {id, word, translate}}) => (
-          <Card id={id} word={word} translate={translate} />
+        renderItem={({item: {id, word, translate, step}}) => (
+          <Card
+            id={id}
+            word={word}
+            translate={translate}
+            step={step}
+            onNext={handleNext}
+          />
         )}
         onSnapToItem={setIndex}
       />

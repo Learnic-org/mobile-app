@@ -1,8 +1,40 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, TouchableHighlight} from 'react-native';
+import useUpdateWord from '../../../api/hooks/useUpdateWord';
+import {
+  getRepeatDateIfFail,
+  getRepeatDateIfRepeatAgain,
+  getNewRepeatDateByStep,
+} from '../../../utils/getNewRepeatDate';
 
-const Card = ({id, word, translate}) => {
+const Card = ({id, word, translate, step, onNext}) => {
+  const {updateWord} = useUpdateWord();
   const [showTranslate, setShowTranslate] = useState(false);
+
+  const updateStep = async () => {
+    const newStep = step + 1;
+    const newRepeatDate = getNewRepeatDateByStep(newStep);
+    await updateWord(id, {
+      step: newStep,
+      repeat: newRepeatDate,
+    });
+    onNext();
+  };
+
+  const updateRepeatTime = async action => {
+    if (action === 'fail') {
+      const newRepeatDate = getRepeatDateIfFail();
+      await updateWord(id, {
+        repeat: newRepeatDate,
+      });
+    } else if (action === 'again') {
+      const newRepeatDate = getRepeatDateIfRepeatAgain();
+      await updateWord(id, {
+        repeat: newRepeatDate,
+      });
+    }
+    onNext();
+  };
 
   return (
     <>
@@ -22,13 +54,17 @@ const Card = ({id, word, translate}) => {
       <View style={styles.footer}>
         <Text>How quickly did you remember the translate?</Text>
         <View style={styles.buttons}>
-          <TouchableHighlight style={styles.button}>
+          <TouchableHighlight style={styles.button} onPress={updateStep}>
             <Text>🔥 +2</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.button}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => updateRepeatTime('again')}>
             <Text>🤔 +1</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.button}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => updateRepeatTime('fail')}>
             <Text>😰 0</Text>
           </TouchableHighlight>
         </View>
